@@ -1,4 +1,3 @@
-
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: var(--font-sans); }
@@ -149,6 +148,9 @@ let productData = null;
 let roomImageBase64 = null;
 let currentStep = 1;
 
+// مـلاحـظـة: ضع مفتاح الـ API الخاص بك هنا ليعمل التطبيق بشكل كامل
+const ANTHROPIC_API_KEY = "ضع_مفتاح_الـ_API_خاصتك_هنا";
+
 function setStep(n) {
   currentStep = n;
   document.querySelectorAll('.section').forEach((s,i) => s.classList.toggle('active', i+1===n));
@@ -188,12 +190,22 @@ async function fetchProduct() {
   try {
     const res = await fetch("https://cors-anywhere.com/https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: prompt }] })
+      headers: { 
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01"
+      },
+      body: JSON.stringify({ 
+        model: "claude-3-5-sonnet-20241022", 
+        max_tokens: 1000, 
+        messages: [{ role: "user", content: prompt }] 
+      })
     });
+    
     const data = await res.json();
-    const text = data.content.map(i => i.text || "").join("\n");
-    const clean = text.replace(/```json|```/g, "").trim();
+    const aiText = data.content[0].text;
+    const clean = aiText.replace(/```json|```/g, "").trim();
+    
     productData = JSON.parse(clean);
     showProductPreview(productData);
     document.getElementById('btn1').disabled = false;
@@ -285,16 +297,25 @@ async function goStep3() {
   ]}];
 
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
+    const res = await fetch("https://cors-anywhere.com/https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages })
+      headers: { 
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01"
+      },
+      body: JSON.stringify({ 
+        model: "claude-3-5-sonnet-20241022", 
+        max_tokens: 1000, 
+        messages 
+      })
     });
+    
     const data = await res.json();
-    const aiText = data.content.map(i => i.text || "").join("\n");
+    const aiResponseText = data.content[0].text;
 
     document.getElementById('loadingBox').style.display = 'none';
-    document.getElementById('aiText').textContent = aiText;
+    document.getElementById('aiText').textContent = aiResponseText;
     document.getElementById('resultTitle').textContent = p.name + ' في مكانك';
     document.getElementById('resultDesc').textContent = `${p.width}×${p.height}×${p.depth} سم · ${p.color} · ${p.material}`;
     document.getElementById('resultTags').innerHTML = `
