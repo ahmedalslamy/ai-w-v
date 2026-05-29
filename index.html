@@ -193,8 +193,8 @@
           <div class="image-frame" style="border-color: var(--c-accent); box-shadow: 0 4px 15px rgba(29, 158, 117, 0.15);">
             <span class="frame-label" style="background: var(--c-accent);">المعاينة الذكية المدمجة</span>
             <div id="visualEffectContainer" style="position:relative; width:100%; height:100%;">
-                <img id="blendedRoomImg" src="" alt="التصور الذكي" style="filter: brightness(0.95) contrast(1.02);">
-                <div id="lightOverlay" style="position:absolute; inset:0; pointer-events:none; mix-blend-mode: screen; opacity:0.65; transition:all 0.5s;"></div>
+                <img id="blendedRoomImg" src="" alt="التصور الذكي">
+                <div id="lightOverlay" style="position:absolute; inset:0; pointer-events:none; transition:all 0.5s;"></div>
             </div>
           </div>
         </div>
@@ -202,7 +202,7 @@
         <div class="card" id="aiAnalysis" style="margin-top:0">
           <p style="font-size:14px;font-weight:600;margin-bottom:8px">
             <i class="ti ti-robot" aria-hidden="true" style="color:var(--c-accent); margin-left:4px;"></i> 
-            تقرير التناسق والديكور الذكي:
+            تقييم التناسق والديكور الذكي:
           </p>
           <p class="result-note" id="aiText" style="color:#333; font-size:13.5px;"></p>
         </div>
@@ -235,7 +235,8 @@ function fetchProduct() {
   
   if (!url) return;
   
-  if (url.includes('led') || url.includes('strip') || url.includes('neon') || url.includes('شريط')) {
+  // فحص الكلمات المفتاحية الذكي لتخطّي حظر الروابط الطويلة والمعقدة لأمازون وعلي إكسبريس
+  if (url.includes('led') || url.includes('strip') || url.includes('neon') || url.includes('شريط') || url.includes('%d8%b4%d8%b1%d9%8a%d8%b7')) {
     productData = {
       "name": "شريط إضاءة ديكوري نيون LED RGB",
       "store": "Amazon.sa",
@@ -244,9 +245,9 @@ function fetchProduct() {
       "color": "RGB متعدد الألوان مخصص",
       "material": "سيليكون مرن نيون",
       "placement": "خلف الشاشة أو أسفل حافة الطاولة السفلى",
-      "description": "شريط نيون مرن بطول 5 أمتار مجهز بريموت تحكم 24 مفتاح لتغيير الألوان والمزامنة السمعية."
+      "description": "شريط نيون مرن بطول 5 أمتار مجهز بريموت تحكم 24 مفتاح لتغيير الألوان والمزامنة السمعية مع الألعاب والكمبيوتر."
     };
-  } else if (url.includes('screen') || url.includes('monitor') || url.includes('إضاءة') || url.includes('شاشة')) {
+  } else if (url.includes('screen') || url.includes('monitor') || url.includes('إضاءة') || url.includes('شاشة') || url.includes('%d8%b4%d8%a7%d8%b4%d9%8a')) {
     productData = {
       "name": "مصباح شريط إضاءة شاشة الكمبيوتر الذكي مع طاقة USB",
       "store": "Aliexpress",
@@ -255,7 +256,7 @@ function fetchProduct() {
       "color": "أسود (ثلاثي الألوان: دافئ / بارد / طبيعي)",
       "material": "ألومنيوم وبلاستيك مقوى",
       "placement": "مثبت مباشرة على الحافة العلوية لشاشة الكمبيوتر",
-      "description": "مصباح مكتبي معلق وموفر للمساحة بـ 3 مستويات حرارة ألوان لحماية العين أثناء العمل أو الألعاب."
+      "description": "مصباح مكتبي معلق وموفر للمساحة بـ 3 مستويات حرارة ألوان لحماية العين أثناء العمل أو الألعاب في الفترات الليلية."
     };
   } else {
     productData = {
@@ -266,7 +267,7 @@ function fetchProduct() {
       "color": "متناسق مع المكان",
       "material": "خامات عالية الجودة",
       "placement": "على سطح الطاولة الرئيسية",
-      "description": "ملحق إضافي يضفي لمسة جمالية وتنظيمية مبتكرة على بيئة ومكتب المستخدم."
+      "description": "ملحق إضافي يضفي لمسة جمالية وتنظيمية مبتكرة على بيئة ومكتب المستخدم لتعديل السيت أب."
     };
   }
 
@@ -328,20 +329,38 @@ function goStep3() {
     document.getElementById('loadingBox').style.display = 'none';
     
     document.getElementById('originalRoomImg').src = roomImageSrc;
-    document.getElementById('blendedRoomImg').src = roomImageSrc;
     
+    // 1. تفعيل تعتيم صورة المعاينة وزيادة تباينها لإبراز ألوان النيون بشكل ملحوظ
+    const blendedImg = document.getElementById('blendedRoomImg');
+    blendedImg.src = roomImageSrc;
+    blendedImg.style.filter = "brightness(0.55) contrast(1.25) saturate(1.35)";
+    
+    // 2. التحكم في طبقة الإضاءة الساقطة التلقائية (Overlay)
     const overlay = document.getElementById('lightOverlay');
     const p = productData;
     let analysisText = "";
 
-    if (p.name.includes("نيون")) {
-      overlay.style.background = "radial-gradient(circle at 50% 40%, rgba(0, 229, 255, 0.28) 0%, rgba(255, 0, 128, 0.22) 65%, transparent 100%)";
+    // تصفير التأثيرات السابقة لضمان التحديث اللحظي
+    overlay.style.background = "none";
+    overlay.style.boxShadow = "none";
+
+    if (p.name.includes("نيون") || p.name.includes("LED")) {
+      // سكب وهج نيون فوسفوري فاقع يوضح فرق الإضاءة للعميل فوراً
+      overlay.style.background = "radial-gradient(circle at 50% 50%, rgba(0, 242, 254, 0.5) 0%, rgba(253, 0, 140, 0.4) 60%, transparent 90%)";
+      overlay.style.mixBlendMode = "screen";
+      overlay.style.opacity = "0.9";
       analysisText = `✨ <b>تحليل الديكور لشريط الـ LED:</b> مكتبك الحالي ذو مساحة ممتازة وجدار خلفي أبيض واسع ومثالي لعكس الإضاءة المخفية. نقترح لصق شريط النيون المرن خلف الحافة الخلفية لسطح المكتب الخشبي بالكامل، أو تمريره خلف شاشة العرض الكبيرة. سيعطي هذا التوهج امتداداً بصرياً رائعاً يزيد من عمق الغرفة ويقلل من إجهاد العين أثناء الجلسات الليلية، ويتماشى تماماً مع النمط التقني المودرن لشاشتك ولابتوبك.`;
-    } else if (p.name.includes("شاشة")) {
-      overlay.style.background = "linear-gradient(to bottom, transparent 25%, rgba(255, 235, 204, 0.2) 65%, rgba(255, 215, 0, 0.14) 100%)";
-      analysisText = `🖥️ <b>تحليل الديكور لإضاءة الشاشة المعلقة:</b> شريط الشاشة سيتوافق بشكل مثالي عند تثبيته على الحافة العلوية للشاشة الرئيسية الموضحة في الصورة. نظراً لأن الإضاءة تسقط بزاوية 45 درجة لأسفل، فإنها ستضيء لوحة مفاتيحك ومنطقة العمل الخشبية بالكامل دون أن تنعكس على زجاج الشاشة أو تسبب وهجاً مزعجاً في المرآة الجانبية. خيار رائع جداً لتوفير مساحة المكتب والاستغناء عن الأباجورات التقليدية الكبيرة.`;
+    } else if (p.name.includes("شاشة") || p.name.includes("مصباح")) {
+      // إسقاط ضوئي مخروطي دافئ يغطي منطقة العمل والكيبورد بالكامل
+      overlay.style.background = "linear-gradient(to bottom, transparent 15%, rgba(255, 183, 77, 0.45) 55%, rgba(255, 143, 0, 0.55) 100%)";
+      overlay.style.mixBlendMode = "color-dodge";
+      overlay.style.opacity = "0.95";
+      analysisText = `🖥️ <b>تحليل الديكور لإضاءة الشاشة المعلقة:</b> شريط الشاشة سيتوافق بشكل مثالي عند تثتبته على الحافة العلوية للشاشة الرئيسية الموضحة في الصورة. نظراً لأن الإضاءة تسقط بزاوية 45 درجة لأسفل، فإنها ستضيء لوحة مفاتيحك ومنطقة العمل الخشبية بالكامل دون أن تنعكس على زجاج الشاشة أو تسبب وهجاً مزعجاً في المرآة الجانبية. خيار رائع جداً لتوفير مساحة المكتب والاستغناء عن الأباجورات التقليدية الكبيرة.`;
     } else {
-      overlay.style.background = "rgba(29, 158, 117, 0.05)";
+      // إضاءة عامة هادئة ومتناسقة مع المساحة لباقي المنتجات
+      overlay.style.background = "rgba(29, 158, 117, 0.08)";
+      overlay.style.mixBlendMode = "multiply";
+      overlay.style.opacity = "0.5";
       analysisText = `👍 <b>التحليل العام للمساحة:</b> المنتج المختار يتناسب في حجمه مع أبعاد الطاولة الخشبية المتوفرة لديك. وضعه في المنتصف أمام الشاشة أو بجانب جهاز المحمول سيعزز من تنظيم وتناسق أدواتك المكتبية دون إحداث فوضى في المكان.`;
     }
 
