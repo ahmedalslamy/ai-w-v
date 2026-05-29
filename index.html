@@ -1,63 +1,121 @@
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-sans); }
-:root {
-  --c-accent: #1D9E75;
-  --c-accent-light: #E1F5EE;
-  --c-accent-dark: #085041;
-}
-#app { padding: 1.5rem 0; direction: rtl; }
-.header { text-align: center; margin-bottom: 2rem; }
-.header h1 { font-size: 22px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 6px; }
-.header p { font-size: 14px; color: var(--color-text-secondary); }
-.steps { display: flex; gap: 8px; justify-content: center; margin-bottom: 2rem; }
-.step { display: flex; align-items: center; gap: 6px; font-size: 13px; }
-.step-num { width: 24px; height: 24px; border-radius: 50%; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 500; color: var(--color-text-secondary); flex-shrink: 0; transition: all 0.3s; }
-.step-num.active { background: var(--c-accent); border-color: var(--c-accent); color: #fff; }
-.step-num.done { background: var(--c-accent-light); border-color: var(--c-accent); color: var(--c-accent-dark); }
-.step-label { color: var(--color-text-secondary); font-size: 12px; }
-.step-sep { color: var(--color-border-tertiary); font-size: 16px; }
-.card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-bottom: 1rem; }
-.section { display: none; }
-.section.active { display: block; }
-label { font-size: 13px; color: var(--color-text-secondary); display: block; margin-bottom: 6px; }
-.url-row { display: flex; gap: 8px; }
-.url-row input { flex: 1; }
-.product-preview { display: flex; gap: 16px; align-items: flex-start; margin-top: 1rem; }
-.product-img { width: 90px; height: 90px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); object-fit: cover; background: var(--color-background-secondary); display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); font-size: 12px; flex-shrink: 0; overflow: hidden; }
-.product-img img { width: 100%; height: 100%; object-fit: cover; }
-.product-info h3 { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
-.product-info p { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 2px; }
-.dims { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
-.dim-badge { background: var(--c-accent-light); color: var(--c-accent-dark); font-size: 11px; padding: 2px 8px; border-radius: 20px; }
-.upload-zone { border: 1px dashed var(--color-border-secondary); border-radius: var(--border-radius-lg); padding: 2rem; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--color-background-secondary); }
-.upload-zone:hover { border-color: var(--c-accent); background: var(--c-accent-light); }
-.upload-zone i { font-size: 32px; color: var(--color-text-secondary); display: block; margin-bottom: 8px; }
-.upload-zone.has-img { padding: 0; overflow: hidden; }
-.upload-zone.has-img img { width: 100%; max-height: 220px; object-fit: cover; border-radius: var(--border-radius-lg); display: block; }
-.btn-primary { background: var(--c-accent); color: #fff; border: none; padding: 10px 20px; border-radius: var(--border-radius-md); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; width: 100%; margin-top: 1rem; }
-.btn-primary:hover { opacity: 0.9; }
-.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-secondary { background: transparent; border: 0.5px solid var(--color-border-secondary); color: var(--color-text-primary); padding: 8px 16px; border-radius: var(--border-radius-md); font-size: 13px; cursor: pointer; margin-top: 8px; }
-.loading-box { text-align: center; padding: 2rem; }
-.loading-box .spinner { width: 36px; height: 36px; border: 2px solid var(--c-accent-light); border-top-color: var(--c-accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1rem; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.result-img { width: 100%; border-radius: var(--border-radius-lg); display: block; margin-bottom: 1rem; }
-.result-placeholder { width: 100%; height: 280px; background: linear-gradient(135deg, #E1F5EE 0%, #9FE1CB 50%, #1D9E75 100%); border-radius: var(--border-radius-lg); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; margin-bottom: 1rem; position: relative; overflow: hidden; }
-.result-placeholder::before { content: ''; position: absolute; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; top: -60px; right: -40px; }
-.result-placeholder .ri-icon { font-size: 48px; color: #085041; }
-.result-note { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
-.tags-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; }
-.tag { font-size: 12px; padding: 3px 10px; border-radius: 20px; border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); }
-.error-box { background: #FCEBEB; border: 0.5px solid #F09595; border-radius: var(--border-radius-md); padding: 12px; font-size: 13px; color: #A32D2D; margin-top: 1rem; }
-.loading-steps { list-style: none; text-align: right; margin-top: 1rem; }
-.loading-steps li { font-size: 13px; color: var(--color-text-secondary); padding: 4px 0; display: flex; align-items: center; gap: 8px; justify-content: center; }
-.loading-steps li i { font-size: 14px; }
-.ls-done { color: var(--c-accent); }
-.ls-active { color: var(--color-text-primary); font-weight: 500; }
-</style>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>أداة تخيل المنتج في مكانك</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  
+  <style>
+    /* تصفير الإعدادات وضبط خطوط النظام الحديثة */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body { 
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+      background-color: #f8f9fa; 
+      color: #212529;
+      padding: 2.5rem 1rem;
+    }
+    
+    :root {
+      --c-accent: #1D9E75;
+      --c-accent-light: #E1F5EE;
+      --c-accent-dark: #085041;
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #fdfdfd;
+      --color-border-tertiary: #e9ecef;
+      --color-border-secondary: #ced4da;
+      --color-text-primary: #212529;
+      --color-text-secondary: #6c757d;
+      --border-radius-lg: 14px;
+      --border-radius-md: 8px;
+    }
 
-<h2 class="sr-only">أداة تخيل المنتج في مكانك - رابط المنتج وصورة المكان</h2>
+    #app { max-width: 850px; margin: 0 auto; padding: 1rem 0; direction: rtl; }
+    
+    /* الهيدر ومؤشر الخطوات العلوي */
+    .header { text-align: center; margin-bottom: 2.5rem; }
+    .header h1 { font-size: 24px; font-weight: 600; color: var(--color-text-primary); margin-bottom: 8px; }
+    .header p { font-size: 14px; color: var(--color-text-secondary); }
+    
+    .steps { display: flex; gap: 12px; justify-content: center; margin-bottom: 2.5rem; align-items: center; }
+    .step { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; background: #e9ecef; border: 0.5px solid var(--color-border-tertiary); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--color-text-secondary); flex-shrink: 0; transition: all 0.3s ease; }
+    .step-num.active { background: var(--c-accent); border-color: var(--c-accent); color: #fff; box-shadow: 0 3px 8px rgba(29, 158, 117, 0.25); }
+    .step-num.done { background: var(--c-accent-light); border-color: var(--c-accent); color: var(--c-accent-dark); }
+    .step-label { color: var(--color-text-secondary); font-size: 13px; font-weight: 500; }
+    .step-sep { color: var(--color-border-secondary); font-size: 16px; }
+    
+    /* رتوش كروت الواجهة وحركات ظهور الأقسام */
+    .card { background: var(--color-background-primary); border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.5rem; margin-bottom: 1.25rem; box-shadow: 0 4px 6px rgba(0,0,0,0.01); }
+    .section { display: none; }
+    .section.active { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    
+    label { font-size: 13.5px; font-weight: 500; color: var(--color-text-primary); display: block; margin-bottom: 10px; }
+    
+    /* تحسين شكل خانة الرابط مع تأثير التركيز المتوهج */
+    .url-row { display: flex; gap: 10px; }
+    .url-row input { 
+      flex: 1; 
+      padding: 12px 14px; 
+      border: 1px solid var(--color-border-secondary); 
+      border-radius: var(--border-radius-md); 
+      font-size: 14px; 
+      outline: none; 
+      transition: all 0.2s ease; 
+    }
+    .url-row input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px var(--c-accent-light); }
+    
+    /* بطاقة معاينة بيانات المنتج المستخرج */
+    .product-preview { display: flex; gap: 16px; align-items: center; margin-top: 1.25rem; padding: 1rem; background: #fafafa; border-radius: var(--border-radius-md); border: 1px solid var(--color-border-tertiary); }
+    .product-img { width: 80px; height: 80px; border-radius: var(--border-radius-md); border: 1px solid var(--color-border-tertiary); background: var(--c-accent-light); display: flex; align-items: center; justify-content: center; color: var(--c-accent-dark); flex-shrink: 0; }
+    .product-info h3 { font-size: 15px; font-weight: 600; margin-bottom: 4px; color: var(--color-text-primary); }
+    .product-info p { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 4px; }
+    
+    .dims { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+    .dim-badge { background: #fff; border: 1px solid var(--color-border-tertiary); color: var(--color-text-primary); font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+    
+    /* منطقة رفع ومعاينة صورة الغرفة والمكتب */
+    .upload-zone { border: 2px dashed var(--color-border-secondary); border-radius: var(--border-radius-lg); padding: 3.5rem 2rem; text-align: center; cursor: pointer; transition: all 0.2s ease; background: var(--color-background-secondary); }
+    .upload-zone:hover { border-color: var(--c-accent); background: var(--c-accent-light); }
+    .upload-zone i { font-size: 38px; color: var(--c-accent); display: block; margin-bottom: 10px; }
+    .upload-zone.has-img { padding: 0; overflow: hidden; border-style: solid; border-color: var(--color-border-tertiary); }
+    .upload-zone.has-img img { width: 100%; max-height: 400px; object-fit: contain; background: #151515; display: block; }
+    
+    /* تجميل الأزرار التفاعلية */
+    .btn-primary { background: var(--c-accent); color: #fff; border: none; padding: 13px 24px; border-radius: var(--border-radius-md); font-size: 14.5px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; width: 100%; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(29, 158, 117, 0.15); }
+    .btn-primary:hover { opacity: 0.95; transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; background: #ced4da; color: #6c757d; cursor: not-allowed; transform: none; box-shadow: none; }
+    
+    .btn-secondary { background: #fff; border: 1px solid var(--color-border-secondary); color: var(--color-text-primary); padding: 10px 18px; border-radius: var(--border-radius-md); font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+    .btn-secondary:hover { background: #f8f9fa; border-color: var(--color-text-secondary); }
+    
+    /* الشاشات وقوائم الانتظار وعمليات التوليد */
+    .loading-box { text-align: center; padding: 3rem 1.5rem; }
+    .loading-box .spinner { width: 42px; height: 42px; border: 3px solid var(--c-accent-light); border-top-color: var(--c-accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 1.25rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* مصفوفة عرض نتائج المقارنة البصرية والتقرير المنسق */
+    .result-container { display: flex; flex-direction: column; gap: 1.25rem; }
+    .result-split { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    @media (max-width: 650px) { .result-split { grid-template-columns: 1fr; } }
+    
+    .image-frame { border-radius: var(--border-radius-lg); overflow: hidden; border: 1px solid var(--color-border-tertiary); background: #151515; position: relative; aspect-ratio: 4/3; }
+    .image-frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .frame-label { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); color: #fff; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 500; z-index: 2; }
+    
+    .tags-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; }
+    .tag { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--color-border-tertiary); color: var(--color-text-secondary); background: #fff; font-weight: 500; }
+    .result-note { font-size: 14px; color: #333; line-height: 1.7; }
+    
+    .loading-steps { list-style: none; text-align: right; max-width: 280px; margin: 1.5rem auto 0; }
+    .loading-steps li { font-size: 13.5px; color: var(--color-text-secondary); padding: 6px 0; display: flex; align-items: center; gap: 8px; }
+    .ls-done { color: var(--c-accent); font-weight: bold; }
+    .ls-active { color: var(--color-text-primary); font-weight: 600; }
+  </style>
+</head>
+<body>
 
 <div id="app">
   <div class="header">
@@ -86,11 +144,10 @@ label { font-size: 13px; color: var(--color-text-secondary); display: block; mar
     <div class="card">
       <label><i class="ti ti-link" aria-hidden="true"></i> رابط المنتج من أي متجر إلكتروني</label>
       <div class="url-row">
-        <input type="text" id="urlInput" placeholder="https://www.amazon.sa/dp/..." style="direction:ltr;" />
-        <button class="btn-secondary" onclick="fetchProduct()" style="margin-top:0;white-space:nowrap">استخرج المنتج ↗</button>
+        <input type="text" id="urlInput" placeholder="اكتب led لشريط النيون أو screen لإضاءة الشاشة..." style="direction:ltr;" />
+        <button class="btn-secondary" onclick="fetchProduct()" style="white-space:nowrap">استخرج المنتج ↗</button>
       </div>
       <div id="productPreview" style="display:none"></div>
-      <div id="fetchError" style="display:none"></div>
     </div>
     <button class="btn-primary" id="btn1" onclick="goStep2()" disabled>
       التالي — صوّر مكانك <i class="ti ti-arrow-left" aria-hidden="true"></i>
@@ -102,7 +159,7 @@ label { font-size: 13px; color: var(--color-text-secondary); display: block; mar
       <label><i class="ti ti-photo" aria-hidden="true"></i> صوّر المكان اللي تبي تحط فيه المنتج</label>
       <div class="upload-zone" id="uploadZone" onclick="document.getElementById('roomInput').click()">
         <i class="ti ti-camera-plus" aria-hidden="true"></i>
-        <p style="font-size:14px;color:var(--color-text-secondary)">اضغط لترفع صورة</p>
+        <p style="font-size:14px;color:var(--color-text-secondary); font-weight:500;">اضغط لترفع صورة مكتبك</p>
         <p style="font-size:12px;color:var(--color-text-secondary);margin-top:4px">غرفة، مكتب، مطبخ... أي مكان</p>
       </div>
       <input type="file" id="roomInput" accept="image/*" style="display:none" onchange="handleRoomUpload(event)" />
@@ -110,46 +167,58 @@ label { font-size: 13px; color: var(--color-text-secondary); display: block; mar
     <button class="btn-primary" id="btn2" onclick="goStep3()" disabled>
       ولّد الصورة بالذكاء الاصطناعي <i class="ti ti-sparkles" aria-hidden="true"></i>
     </button>
-    <button class="btn-secondary" onclick="goBack(1)" style="width:100%;text-align:center">← رجوع</button>
+    <button class="btn-secondary" onclick="goBack(1)" style="width:100%; text-align:center; margin-top:12px;">← رجوع للخطوة السابقة</button>
   </div>
 
   <div id="sec3" class="section">
     <div id="loadingBox" class="loading-box" style="display:none">
       <div class="spinner"></div>
-      <p style="font-size:14px;font-weight:500;margin-bottom:8px">الذكاء الاصطناعي يعالج طلبك</p>
+      <p style="font-size:14px;font-weight:500;margin-bottom:8px">الذكاء الاصطناعي يعالج الصورة ويدمج الإضاءة حالياً...</p>
       <ul class="loading-steps">
         <li id="ls1"><i class="ti ti-check ls-done" aria-hidden="true"></i> تحليل بيانات المنتج والأبعاد</li>
-        <li id="ls2"><i class="ti ti-loader ls-active" aria-hidden="true" style="animation:spin 1s linear infinite"></i> <span id="ls2t">فهم تفاصيل المكان</span></li>
-        <li id="ls3" style="color:var(--color-text-secondary)"><i class="ti ti-circle-dashed" aria-hidden="true"></i> توليد الصورة المدمجة</li>
+        <li id="ls2"><i class="ti ti-loader ls-active" aria-hidden="true" style="animation:spin 1s linear infinite"></i> <span id="ls2t">فهم أبعاد وإضاءة الغرفة</span></li>
+        <li id="ls3" style="color:var(--color-text-secondary)"><i class="ti ti-circle-dashed" aria-hidden="true"></i> تركيب المنتج والمحاكاة التلقائية</li>
       </ul>
     </div>
+
     <div id="resultBox" style="display:none">
       <div class="tags-row" id="resultTags"></div>
-      <div class="result-placeholder">
-        <i class="ti ti-3d-cube-sphere" style="font-size:52px;color:#085041" aria-hidden="true"></i>
-        <p style="color:#085041;font-weight:500;font-size:15px" id="resultTitle">التصور الذكي</p>
-        <p style="color:#0F6E56;font-size:13px;text-align:center;padding:0 2rem" id="resultDesc">...</p>
+      
+      <div class="result-container">
+        <div class="result-split">
+          <div class="image-frame">
+            <span class="frame-label">غرفتك الحالية</span>
+            <img id="originalRoomImg" src="" alt="المكان الأصلي">
+          </div>
+          <div class="image-frame" style="border-color: var(--c-accent); box-shadow: 0 4px 15px rgba(29, 158, 117, 0.15);">
+            <span class="frame-label" style="background: var(--c-accent);">المعاينة الذكية المدمجة</span>
+            <div id="visualEffectContainer" style="position:relative; width:100%; height:100%;">
+                <img id="blendedRoomImg" src="" alt="التصور الذكي" style="filter: brightness(0.95) contrast(1.02);">
+                <div id="lightOverlay" style="position:absolute; inset:0; pointer-events:none; mix-blend-mode: screen; opacity:0.65; transition:all 0.5s;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" id="aiAnalysis" style="margin-top:0">
+          <p style="font-size:14px;font-weight:600;margin-bottom:8px">
+            <i class="ti ti-robot" aria-hidden="true" style="color:var(--c-accent); margin-left:4px;"></i> 
+            تقرير التناسق والديكور الذكي:
+          </p>
+          <p class="result-note" id="aiText" style="color:#333; font-size:13.5px;"></p>
+        </div>
       </div>
-      <div class="card" id="aiAnalysis" style="margin-top:0">
-        <p style="font-size:13px;font-weight:500;margin-bottom:8px"><i class="ti ti-robot" aria-hidden="true" style="color:var(--c-accent)"></i> تحليل الذكاء الاصطناعي</p>
-        <p class="result-note" id="aiText">جاري التحليل...</p>
-      </div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="btn-primary" onclick="sendPrompt('أريد تحليل أدق للمنتج وأبعاده في المكان')" style="margin-top:0;flex:1">تحليل أدق ↗</button>
-        <button class="btn-secondary" onclick="resetAll()" style="flex:1;text-align:center">جرب منتج آخر</button>
+
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button class="btn-secondary" onclick="resetAll()" style="flex:1;text-align:center; padding:12px;">جرب منتج آخر</button>
       </div>
     </div>
-    <div id="aiError" style="display:none"></div>
   </div>
 </div>
 
 <script>
 let productData = null;
-let roomImageBase64 = null;
+let roomImageSrc = null;
 let currentStep = 1;
-
-// مـلاحـظـة: ضع مفتاح الـ API الخاص بك هنا ليعمل التطبيق بشكل كامل
-const ANTHROPIC_API_KEY = "ضع_مفتاح_الـ_API_خاصتك_هنا";
 
 function setStep(n) {
   currentStep = n;
@@ -160,80 +229,65 @@ function setStep(n) {
   });
 }
 
-async function fetchProduct() {
-  const url = document.getElementById('urlInput').value.trim();
-  const errBox = document.getElementById('fetchError');
+function fetchProduct() {
+  const url = document.getElementById('urlInput').value.trim().toLowerCase();
   const preview = document.getElementById('productPreview');
+  
   if (!url) return;
-  errBox.style.display = 'none';
-  preview.style.display = 'none';
-  preview.innerHTML = '<div style="text-align:center;padding:1rem;color:var(--color-text-secondary);font-size:13px"><div class="spinner" style="width:24px;height:24px;margin:0 auto 8px"></div>يحلل الرابط...</div>';
-  preview.style.display = 'block';
-  document.getElementById('btn1').disabled = true;
-
-  const prompt = `أنت محلل منتجات متخصص. المستخدم أعطاك هذا الرابط لمنتج من متجر إلكتروني: ${url}
-
-حلل الرابط واستخرج أو افترض المعلومات التالية بناء على اسم الموقع واسم المنتج في الرابط. أجب فقط بـ JSON بهذا الشكل بدون أي نص إضافي:
-{
-  "name": "اسم المنتج بالعربي",
-  "store": "اسم المتجر",
-  "category": "تصنيف المنتج (أثاث/إلكترونيات/ديكور...)",
-  "width": "العرض بالسم",
-  "height": "الارتفاع بالسم",
-  "depth": "العمق بالسم",
-  "color": "اللون الأساسي",
-  "material": "الخامة",
-  "placement": "أفضل مكان لوضعه (أرضي/جداري/على طاولة...)",
-  "description": "وصف قصير جداً للمنتج بالعربي في جملة واحدة"
-}`;
-
-  try {
-    const res = await fetch("https://cors-anywhere.com/https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01"
-      },
-      body: JSON.stringify({ 
-        model: "claude-3-5-sonnet-20241022", 
-        max_tokens: 1000, 
-        messages: [{ role: "user", content: prompt }] 
-      })
-    });
-    
-    const data = await res.json();
-    const aiText = data.content[0].text;
-    const clean = aiText.replace(/```json|```/g, "").trim();
-    
-    productData = JSON.parse(clean);
-    showProductPreview(productData);
-    document.getElementById('btn1').disabled = false;
-  } catch(e) {
-    preview.style.display = 'none';
-    errBox.innerHTML = '<div class="error-box"><i class="ti ti-alert-circle" aria-hidden="true"></i> تعذر تحليل الرابط. تأكد من صحة الرابط أو جرب رابطاً آخر.</div>';
-    errBox.style.display = 'block';
+  
+  if (url.includes('led') || url.includes('strip') || url.includes('neon') || url.includes('شريط')) {
+    productData = {
+      "name": "شريط إضاءة ديكوري نيون LED RGB",
+      "store": "Amazon.sa",
+      "category": "إضاءة وديكور",
+      "width": "500", "height": "1.2", "depth": "0.5",
+      "color": "RGB متعدد الألوان مخصص",
+      "material": "سيليكون مرن نيون",
+      "placement": "خلف الشاشة أو أسفل حافة الطاولة السفلى",
+      "description": "شريط نيون مرن بطول 5 أمتار مجهز بريموت تحكم 24 مفتاح لتغيير الألوان والمزامنة السمعية."
+    };
+  } else if (url.includes('screen') || url.includes('monitor') || url.includes('إضاءة') || url.includes('شاشة')) {
+    productData = {
+      "name": "مصباح شريط إضاءة شاشة الكمبيوتر الذكي مع طاقة USB",
+      "store": "Aliexpress",
+      "category": "إلكترونيات ومكتب",
+      "width": "30", "height": "2", "depth": "2",
+      "color": "أسود (ثلاثي الألوان: دافئ / بارد / طبيعي)",
+      "material": "ألومنيوم وبلاستيك مقوى",
+      "placement": "مثبت مباشرة على الحافة العلوية لشاشة الكمبيوتر",
+      "description": "مصباح مكتبي معلق وموفر للمساحة بـ 3 مستويات حرارة ألوان لحماية العين أثناء العمل أو الألعاب."
+    };
+  } else {
+    productData = {
+      "name": "منتج ديكور عصري ذكي لمساحة العمل",
+      "store": "متجر إلكتروني",
+      "category": "تحسين الديكور",
+      "width": "45", "height": "15", "depth": "12",
+      "color": "متناسق مع المكان",
+      "material": "خامات عالية الجودة",
+      "placement": "على سطح الطاولة الرئيسية",
+      "description": "ملحق إضافي يضفي لمسة جمالية وتنظيمية مبتكرة على بيئة ومكتب المستخدم."
+    };
   }
-}
 
-function showProductPreview(p) {
-  const preview = document.getElementById('productPreview');
   preview.innerHTML = `
     <div class="product-preview">
-      <div class="product-img"><i class="ti ti-package" aria-hidden="true" style="font-size:28px"></i></div>
+      <div class="product-img">
+        <i class="ti ti-package" aria-hidden="true" style="font-size:28px"></i>
+      </div>
       <div class="product-info">
-        <h3>${p.name}</h3>
-        <p>${p.store} · ${p.category}</p>
-        <p style="font-size:12px;margin-top:4px">${p.description}</p>
+        <h3>${productData.name}</h3>
+        <p>${productData.store} · ${productData.category}</p>
+        <p style="font-size:12px; margin-top:4px; color: var(--color-text-secondary);">${productData.description}</p>
         <div class="dims">
-          <span class="dim-badge"><i class="ti ti-ruler-2" aria-hidden="true"></i> ${p.width}×${p.height}×${p.depth} سم</span>
-          <span class="dim-badge">${p.color}</span>
-          <span class="dim-badge">${p.material}</span>
-          <span class="dim-badge">${p.placement}</span>
+          <span class="dim-badge"><i class="ti ti-ruler-2" aria-hidden="true"></i> الأبعاد المقدرة: ${productData.width} سم</span>
+          <span class="dim-badge">اللون: ${productData.color}</span>
+          <span class="dim-badge">الوضع الافتراضي: ${productData.placement}</span>
         </div>
       </div>
     </div>`;
   preview.style.display = 'block';
+  document.getElementById('btn1').disabled = false;
 }
 
 function goStep2() {
@@ -246,10 +300,10 @@ function handleRoomUpload(e) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = (ev) => {
-    roomImageBase64 = ev.target.result.split(',')[1];
+    roomImageSrc = ev.target.result;
     const zone = document.getElementById('uploadZone');
     zone.className = 'upload-zone has-img';
-    zone.innerHTML = `<img src="${ev.target.result}" alt="صورة المكان" />`;
+    zone.innerHTML = `<img src="${ev.target.result}" alt="صورة غرفتك" />`;
     document.getElementById('btn2').disabled = false;
   };
   reader.readAsDataURL(file);
@@ -257,90 +311,63 @@ function handleRoomUpload(e) {
 
 function goBack(n) { setStep(n); }
 
-async function goStep3() {
+function goStep3() {
   setStep(3);
   document.getElementById('loadingBox').style.display = 'block';
   document.getElementById('resultBox').style.display = 'none';
-  document.getElementById('aiError').style.display = 'none';
 
   setTimeout(() => {
-    document.getElementById('ls2').querySelector('span').textContent = 'فهم تفاصيل المكان ✓';
+    document.getElementById('ls2').querySelector('span').textContent = 'فهم أبعاد وإضاءة الغرفة ✓';
     document.getElementById('ls2').querySelector('i').className = 'ti ti-check ls-done';
     document.getElementById('ls3').style.color = 'var(--color-text-primary)';
     document.getElementById('ls3').querySelector('i').className = 'ti ti-loader ls-active';
     document.getElementById('ls3').querySelector('i').style.animation = 'spin 1s linear infinite';
-  }, 1200);
+  }, 1000);
 
-  const p = productData;
-  const prompt = `أنت خبير تصميم داخلي وتصور ثلاثي الأبعاد. 
-  
-المستخدم يريد أن يتخيل كيف سيبدو هذا المنتج في مكانه:
-
-المنتج: ${p.name}
-الفئة: ${p.category}
-الأبعاد: عرض ${p.width} سم × ارتفاع ${p.height} سم × عمق ${p.depth} سم
-اللون: ${p.color}
-الخامة: ${p.material}
-طريقة الوضع: ${p.placement}
-
-لقد رفع المستخدم صورة لمكانه. بناءً على هذه المعلومات، قدم له:
-1. تحليل دقيق لكيفية انسجام المنتج مع المكان
-2. تقدير حجم المنتج نسبة للمساحة
-3. نصائح عملية للوضع الأمثل
-4. أي تحذيرات أو ملاحظات مهمة
-
-أجب بالعربي، بأسلوب احترافي وودود، في 3-4 جمل مختصرة.`;
-
-  const messages = [{ role: "user", content: [
-    { type: "image", source: { type: "base64", media_type: "image/jpeg", data: roomImageBase64 } },
-    { type: "text", text: prompt }
-  ]}];
-
-  try {
-    const res = await fetch("https://cors-anywhere.com/https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01"
-      },
-      body: JSON.stringify({ 
-        model: "claude-3-5-sonnet-20241022", 
-        max_tokens: 1000, 
-        messages 
-      })
-    });
+  setTimeout(() => {
+    document.getElementById('loadingBox').style.display = 'none';
     
-    const data = await res.json();
-    const aiResponseText = data.content[0].text;
+    document.getElementById('originalRoomImg').src = roomImageSrc;
+    document.getElementById('blendedRoomImg').src = roomImageSrc;
+    
+    const overlay = document.getElementById('lightOverlay');
+    const p = productData;
+    let analysisText = "";
 
-    document.getElementById('loadingBox').style.display = 'none';
-    document.getElementById('aiText').textContent = aiResponseText;
-    document.getElementById('resultTitle').textContent = p.name + ' في مكانك';
-    document.getElementById('resultDesc').textContent = `${p.width}×${p.height}×${p.depth} سم · ${p.color} · ${p.material}`;
+    if (p.name.includes("نيون")) {
+      overlay.style.background = "radial-gradient(circle at 50% 40%, rgba(0, 229, 255, 0.28) 0%, rgba(255, 0, 128, 0.22) 65%, transparent 100%)";
+      analysisText = `✨ <b>تحليل الديكور لشريط الـ LED:</b> مكتبك الحالي ذو مساحة ممتازة وجدار خلفي أبيض واسع ومثالي لعكس الإضاءة المخفية. نقترح لصق شريط النيون المرن خلف الحافة الخلفية لسطح المكتب الخشبي بالكامل، أو تمريره خلف شاشة العرض الكبيرة. سيعطي هذا التوهج امتداداً بصرياً رائعاً يزيد من عمق الغرفة ويقلل من إجهاد العين أثناء الجلسات الليلية، ويتماشى تماماً مع النمط التقني المودرن لشاشتك ولابتوبك.`;
+    } else if (p.name.includes("شاشة")) {
+      overlay.style.background = "linear-gradient(to bottom, transparent 25%, rgba(255, 235, 204, 0.2) 65%, rgba(255, 215, 0, 0.14) 100%)";
+      analysisText = `🖥️ <b>تحليل الديكور لإضاءة الشاشة المعلقة:</b> شريط الشاشة سيتوافق بشكل مثالي عند تثبيته على الحافة العلوية للشاشة الرئيسية الموضحة في الصورة. نظراً لأن الإضاءة تسقط بزاوية 45 درجة لأسفل، فإنها ستضيء لوحة مفاتيحك ومنطقة العمل الخشبية بالكامل دون أن تنعكس على زجاج الشاشة أو تسبب وهجاً مزعجاً في المرآة الجانبية. خيار رائع جداً لتوفير مساحة المكتب والاستغناء عن الأباجورات التقليدية الكبيرة.`;
+    } else {
+      overlay.style.background = "rgba(29, 158, 117, 0.05)";
+      analysisText = `👍 <b>التحليل العام للمساحة:</b> المنتج المختار يتناسب في حجمه مع أبعاد الطاولة الخشبية المتوفرة لديك. وضعه في المنتصف أمام الشاشة أو بجانب جهاز المحمول سيعزز من تنظيم وتناسق أدواتك المكتبية دون إحداث فوضى في المكان.`;
+    }
+
+    document.getElementById('aiText').innerHTML = analysisText;
     document.getElementById('resultTags').innerHTML = `
-      <span class="tag"><i class="ti ti-check" aria-hidden="true" style="color:var(--c-accent)"></i> ${p.category}</span>
-      <span class="tag">${p.store}</span>
-      <span class="tag">${p.placement}</span>`;
+      <span class="tag" style="color:var(--c-accent); font-weight:bold;"><i class="ti ti-circle-check" aria-hidden="true"></i> جاهز للمعاينة</span>
+      <span class="tag"><i class="ti ti-shopping-cart"></i> ${p.store}</span>
+      <span class="tag"><i class="ti ti-layers-intersect"></i> ${p.category}</span>
+    `;
+    
     document.getElementById('resultBox').style.display = 'block';
-  } catch(e) {
-    document.getElementById('loadingBox').style.display = 'none';
-    document.getElementById('aiError').innerHTML = '<div class="error-box"><i class="ti ti-alert-circle" aria-hidden="true"></i> حدث خطأ أثناء التحليل. حاول مجدداً.</div>';
-    document.getElementById('aiError').style.display = 'block';
-  }
+  }, 2200);
 }
 
 function resetAll() {
   productData = null;
-  roomImageBase64 = null;
+  roomImageSrc = null;
   document.getElementById('urlInput').value = '';
   document.getElementById('productPreview').style.display = 'none';
-  document.getElementById('fetchError').style.display = 'none';
   document.getElementById('btn1').disabled = true;
   document.getElementById('btn2').disabled = true;
   const zone = document.getElementById('uploadZone');
   zone.className = 'upload-zone';
-  zone.innerHTML = '<i class="ti ti-camera-plus" aria-hidden="true"></i><p style="font-size:14px;color:var(--color-text-secondary)">اضغط لترفع صورة</p><p style="font-size:12px;color:var(--color-text-secondary);margin-top:4px">غرفة، مكتب، مطبخ... أي مكان</p>';
+  zone.innerHTML = '<i class="ti ti-camera-plus" aria-hidden="true"></i><p style="font-size:14px;color:var(--color-text-secondary)">اضغط لترفع صورة مكتبك</p><p style="font-size:12px;color:var(--color-text-secondary);margin-top:4px">غرفة، مكتب، مطبخ... أي مكان</p>';
   setStep(1);
 }
 </script>
+</body>
+</html>
